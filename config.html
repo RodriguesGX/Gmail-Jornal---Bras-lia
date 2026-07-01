@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurar Journal Diário</title>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --secondary: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --light: #f8fafc;
+      --dark: #1a1a2e;
+      --gray: #6b7280;
+      --border: #e5e7eb;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background: #f0f2f5;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      background: var(--light);
+      color: var(--dark);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .form-group .hint {
+      font-size: 12px;
+      color: var(--gray);
+      margin-top: 5px;
+    }
+
+    .toggle-group {
+      background: var(--light);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .toggle-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .toggle-item label {
+      font-size: 14px;
+      color: var(--dark);
+      cursor: pointer;
+      margin-bottom: 0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--success);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .btn-secondary {
+      background: var(--light);
+      color: var(--dark);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .status.success {
+      background: #d1fae5;
+      color: #065f46;
+      display: block;
+    }
+
+    .status.error {
+      background: #fee2e2;
+      color: #dc2626;
+      display: block;
+    }
+
+    .config-output {
+      margin-top: 20px;
+      background: var(--light);
+      border-radius: 8px;
+      padding: 15px;
+      border: 1px solid var(--border);
+    }
+
+    .config-output h3 {
+      font-size: 14px;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .config-output textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 12px;
+      resize: none;
+      background: white;
+    }
+
+    .config-output .copy-btn {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .config-output .copy-btn:hover {
+      background: #2563eb;
+    }
+
+    .footer-info {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .footer-info a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .footer-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚙️ Configurar Journal Diário</h1>
+      <p>Preencha os campos abaixo para personalizar seu journal.</p>
+    </div>
+
+    <form id="configForm">
+      <!-- Cidade -->
+      <div class="form-group">
+        <label for="city">📍 Cidade</label>
+        <input type="text" id="city" placeholder="Ex: Brasília" value="Brasília">
+        <div class="hint">Nome da cidade para exibir no journal.</div>
+      </div>
+
+      <!-- Latitude e Longitude -->
+      <div style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="lat">🌐 Latitude</label>
+          <input type="text" id="lat" placeholder="Ex: -15.7939" value="-15.7939">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="lon">🌐 Longitude</label>
+          <input type="text" id="lon" placeholder="Ex: -47.8828" value="-47.8828">
+        </div>
+      </div>
+      <div class="hint">Coordenadas para buscar o clima. <a href="#" onclick="detectLocation(); return false;" style="color: var(--primary);">Detectar localização</a>.</div>
+
+      <!-- Tema das Notícias -->
+      <div class="form-group">
+        <label for="newsTopic">📰 Tema das Notícias</label>
+        <select id="newsTopic">
+          <option value="top" selected>Principais (G1)</option>
+          <option value="tecnologia">Tecnologia</option>
+          <option value="economia">Economia</option>
+          <option value="ciencia">Ciência</option>
+          <option value="saude">Saúde</option>
+          <option value="esportes">Esportes</option>
+          <option value="entretenimento">Entretenimento</option>
+          <option value="mundo">Mundo (G1)</option>
+          <option value="bbc">BBC Brasil</option>
+          <option value="terra">Terra</option>
+          <option value="uol">UOL</option>
+        </select>
+        <div class="hint">Fontes: G1, BBC, Terra, UOL.</div>
+      </div>
+
+      <!-- Email de Destino -->
+      <div class="form-group">
+        <label for="emailRecipient">✉️ Email de Destino</label>
+        <input type="email" id="emailRecipient" placeholder="seu@email.com" value="">
+        <div class="hint">O journal será enviado para este endereço.</div>
+      </div>
+
+      <!-- Toggles -->
+      <div class="toggle-group">
+        <div class="toggle-item">
+          <label for="showEmails">
+            <span style="color: var(--danger); margin-right: 5px;">✉️</span> Mostrar Emails Não Lidos
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="showEmails" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="toggle-item">
+          <label for="showEvents">
+            <span style="color: var(--secondary); margin-right: 5px;">🎫</span> Mostrar Eventos Sympla
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="showEvents" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="hint">Desative para remover estas seções do seu email.</div>
+      </div>
+
+      <!-- Botões -->
+      <div class="button-row">
+        <button type="button" class="btn btn-secondary" onclick="detectLocation()">📍 Detectar Localização</button>
+        <button type="button" class="btn btn-primary" onclick="saveConfig()">💾 Salvar</button>
+      </div>
+
+      <!-- Status -->
+      <div id="status" class="status"></div>
+
+      <!-- Output para Apps Script -->
+      <div class="config-output" id="configOutput" style="display: none;">
+        <h3>📋 Configurações para Apps Script</h3>
+        <p style="font-size: 12px; color: var(--gray); margin-bottom: 10px;">
+          Copie o código abaixo e cole no <code>Código.gs</code> para atualizar suas configurações:
+        </p>
+        <textarea id="configCode" readonly></textarea>
+        <button class="copy-btn" onclick="copyToClipboard()">📋 Copiar Código</button>
+      </div>
+    </form>
+
+    <div class="footer-info">
+      <p>⚡ O journal será enviado diariamente às 7:00.</p>
+      <p style="margin-top: 5px;">
+        🎫 Eventos em Brasília via <a href="https://www.sympla.com.br" target="_blank">Sympla</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // CARREGAR CONFIGURAÇÕES DO LOCALSTORAGE
+    // ============================================
+    function loadConfig() {
+      const config = localStorage.getItem('journalConfig');
+      if (config) {
+        const data = JSON.parse(config);
+        document.getElementById('city').value = data.city || 'Brasília';
+        document.getElementById('lat').value = data.lat || '-15.7939';
+        document.getElementById('lon').value = data.lon || '-47.8828';
+        document.getElementById('newsTopic').value = data.newsTopic || 'top';
+        document.getElementById('emailRecipient').value = data.emailRecipient || '';
+        document.getElementById('showEmails').checked = data.showEmails !== false;
+        document.getElementById('showEvents').checked = data.showEvents !== false;
+      }
+    }
+
+    // ============================================
+    // SALVAR CONFIGURAÇÕES NO LOCALSTORAGE
+    // ============================================
+    function saveConfig() {
+      const config = {
+        city: document.getElementById('city').value.trim(),
+        lat: document.getElementById('lat').value.trim(),
+        lon: document.getElementById('lon').value.trim(),
+        newsTopic: document.getElementById('newsTopic').value,
+        emailRecipient: document.getElementById('emailRecipient').value.trim(),
+        showEmails: document.getElementById('showEmails').checked,
+        showEvents: document.getElementById('showEvents').checked
+      };
+
+      localStorage.setItem('journalConfig', JSON.stringify(config));
+      showStatus('✅ Configurações salvas no navegador!', 'success');
+
+      // Gerar código para Apps Script
+      generateConfigCode(config);
+    }
+
+    // ============================================
+    // GERAR CÓDIGO PARA APPS SCRIPT
+    // ============================================
+    function generateConfigCode(config) {
+      const code = `
+// ============================================
+// ATUALIZAR CONFIGURAÇÕES MANUALMENTE
+// ============================================
+function updateSettings() {
+  USER_PROPS.setProperty('city', '${config.city}');
+  USER_PROPS.setProperty('lat', '${config.lat}');
+  USER_PROPS.setProperty('lon', '${config.lon}');
+  USER_PROPS.setProperty('newsTopic', '${config.newsTopic}');
+  USER_PROPS.setProperty('emailRecipient', '${config.emailRecipient}');
+  USER_PROPS.setProperty('showEmails', ${config.showEmails});
+  USER_PROPS.setProperty('showEvents', ${config.showEvents});
+  Logger.log('✅ Configurações atualizadas manualmente!');
+}
+
+// Chame esta função no seu Apps Script para aplicar as configurações:
+updateSettings();
+      `;
+
+      document.getElementById('configCode').value = code;
+      document.getElementById('configOutput').style.display = 'block';
+    }
+
+    // ============================================
+    // COPIAR CÓDIGO PARA CLIPBOARD
+    // ============================================
+    function copyToClipboard() {
+      const textarea = document.getElementById('configCode');
+      textarea.select();
+      document.execCommand('copy');
+      showStatus('📋 Código copiado para a área de transferência!', 'success');
+    }
+
+    // ============================================
+    // DETECTAR LOCALIZAÇÃO VIA GEOLOCATION API
+    // ============================================
+    function detectLocation() {
+      if (navigator.geolocation) {
+        showStatus('🔄 Detectando sua localização...', 'success');
+
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            const lat = position.coords.latitude.toFixed(4);
+            const lon = position.coords.longitude.toFixed(4);
+
+            // Buscar nome da cidade via Nominatim (OpenStreetMap)
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=pt`)
+              .then(response => response.json())
+              .then(data => {
+                const city = data.address?.city || data.address?.town || data.address?.village || 'Localização desconhecida';
+                document.getElementById('city').value = city;
+                document.getElementById('lat').value = lat;
+                document.getElementById('lon').value = lon;
+                showStatus(`✅ Localização detectada: ${city} (${lat}, ${lon})`, 'success');
+              })
+              .catch(() => {
+                document.getElementById('lat').value = lat;
+                document.getElementById('lon').value = lon;
+                showStatus(`✅ Coordenadas detectadas: (${lat}, ${lon}). Insira a cidade manualmente.`, 'success');
+              });
+          },
+          function(error) {
+            showStatus('⚠️ Não foi possível detectar a localização. Insira manualmente.', 'error');
+            console.error('Erro de geolocalização:', error);
+          },
+          { enableHighAccuracy: true, timeout: 10000 }
+        );
+      } else {
+        showStatus('⚠️ Seu navegador não suporta geolocalização. Insira manualmente.', 'error');
+      }
+    }
+
+    // ============================================
+    // EXIBIR STATUS
+    // ============================================
+    function showStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = 'status ' + type;
+      status.style.display = 'block';
+
+      setTimeout(() => {
+        status.style.display = 'none';
+      }, 5000);
+    }
+
+    // ============================================
+    // CARREGAR CONFIGURAÇÕES AO INICIAR
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+      loadConfig();
+    });
+  </script>
+</body>
+</html>
